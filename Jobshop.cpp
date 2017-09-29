@@ -39,20 +39,21 @@ void Jobshop::extractFirstLine()
 	}
 }
 
-std::vector<std::vector<std::pair<int, int>>> Jobshop::extractJobs()
+std::vector<std::vector<int>> Jobshop::extractJobs()
 {
-	std::vector<std::vector<std::pair<int, int>>> jobs;
+	std::vector<std::vector<int>> jobs;
 	if (!ifs.is_open())
 	{
 		std::cout << "failed to open " << filename << std::endl;
 	}
 	else
 	{
-		std::vector<std::pair<int, int>> job;
+		std::vector<int> job;
 		int machine, duration;
 		while (ifs >> machine >> duration)
 		{
-			job.push_back(std::make_pair(machine, duration));
+			job.push_back(machine);
+			job.push_back(duration);
 			if (ifs.peek() == '\n' || ifs.peek() == EOF)
 			{
 				jobs.push_back(job);
@@ -63,7 +64,8 @@ std::vector<std::vector<std::pair<int, int>>> Jobshop::extractJobs()
 	return jobs;
 }
 
-void Jobshop::createJobs(const std::vector<std::vector<std::pair<int, int>>>& aJobs)
+void Jobshop::createJobs(
+		const std::vector<std::vector<int>>& aJobs)
 {
 	for (size_t i = 0; i < aJobs.size(); i++)
 	{
@@ -74,38 +76,40 @@ void Jobshop::createJobs(const std::vector<std::vector<std::pair<int, int>>>& aJ
 
 void Jobshop::printJobs()
 {
-	for(Job job : jobs)
+	for (Job job : jobs)
 	{
 		job.printJob();
 	}
 }
 
-Job Jobshop::getJobLeastSlackTime(std::vector<Job>& jobs)
+void Jobshop::getJobLeastSlackTime(std::vector<Job>& jobs)
 {
-	return jobs[0];
 }
 
 void Jobshop::schedule()
 {
-	int machines[nJobs];
-
-	for(int i = 0; i < nJobs; ++i)
-	{
-		machines[i] = jobs[i].getCurrentMachine();
-	}
-
+//	int machines[nJobs];
+//
+//	for (int i = 0; i < nJobs; ++i)
+//	{
+//		machines[i] = jobs[i].getCurrentMachine();
+//	}
+//	std::vector<int> conflictingMachines = getConflictingMachines(machines);
+//
+//	for (size_t i = 0; i < conflictingMachines.size(); ++i)
+//	{
+//		if()
+//		for (size_t j = 0; j < machines; ++j)
+//		{
+//			if (machines[j] == conflictingMachines[i])
+//			{
+//				jobs[j].calculateLeastSlackTime();
+//			}
+//		}
+//
+//	}
 
 }
-
-std::vector<int> Jobshop::getConflictingMachines(std::vector<int>& machines)
+std::vector<int> Jobshop::getConflictingMachines(int machines[])
 {
-	std::sort(machines, machines + machines.size());
-
-	for(int i = 0; i < sizeof(machines) - 1; i++) {
-	    if (machines[i] == machines[i + 1]) {
-	        machines.erase(machines.begin() + i);
-	        i--;
-	    }
-	}
-	return std::vector<int> ding;
 }
