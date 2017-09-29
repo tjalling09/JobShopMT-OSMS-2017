@@ -8,7 +8,7 @@
 #include <iostream>
 #include "Job.h"
 
-Job::Job(const int aId, const std::vector<std::pair<int, int>>& aTasks) :
+Job::Job(const int aId, const std::vector<int>& aTasks) :
 		id(aId), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
 {
 	createTasks(aTasks);
@@ -37,11 +37,11 @@ void Job::addTime(int time)
 {
 }
 
-void Job::createTasks(const std::vector<std::pair<int,int>>& aTasks)
+void Job::createTasks(const std::vector<int>& aTasks)
 {
-	for (size_t i = 0; i < aTasks.size(); i++)
+	for (size_t i = 0; i < aTasks.size()-1; i++)
 	{
-		Task task(aTasks[i].first,aTasks[i].second);
+		Task task(aTasks[i],aTasks[i+1]);
 		tasks.push_back(task);
 	}
 }
@@ -54,4 +54,9 @@ void Job::printJob()
 		 std::cout << "[" << task.getMachine() << "," << task.getDuration() << "] ";
 	}
 	std::cout << std::endl;
+}
+
+int Job::getId() const
+{
+	return id;
 }

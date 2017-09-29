@@ -35,11 +35,11 @@ private:
 
 	//Private functions
 	void extractFirstLine();
-	std::vector<std::vector<std::pair<int,int>>> extractJobs();
-	void createJobs(const std::vector<std::vector<std::pair<int,int>>>& aJobs);
-	Job getJobLeastSlackTime(std::vector<Job>& jobs);
+	std::vector<std::vector<int>> extractJobs();
+	void createJobs(const std::vector<std::vector<int>>& aJobs);
+	void getJobLeastSlackTime(std::vector<Job>& jobs);
 	void schedule();
-	std::vector<int> getConflictingMachines(std::vector<int>& machines);
+	std::vector<int> getConflictingMachines(int machines[]);
 };
 
 #endif /* JOBSHOP_H_ */

@@ -16,7 +16,7 @@ class Job
 {
 public:
 	//Constructor
-	Job(const int aId, const std::vector<std::pair<int, int>>& aTasks);
+	Job(const int aId, const std::vector<int>& aTasks);
 
 	//Destructor
 	virtual ~Job();
@@ -27,6 +27,7 @@ public:
 	int getCurrentMachine();
 	void addTime(int time);
 	void printJob();
+	int getId() const;
 
 private:
 	//Atributes
@@ -38,7 +39,7 @@ private:
 	int endTime;
 
 	//Private functions
-	void createTasks(const std::vector<std::pair<int, int>>& aTasks);
+	void createTasks(const std::vector<int>& aTasks);
 };
 
 #endif /* JOB_H_ */
