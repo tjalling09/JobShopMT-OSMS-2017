@@ -17,9 +17,10 @@ public:
 	int getMachine() const;
 
 private:
-	int id;
 	int machine;
 	int duration;
+	int earliestStartTime;
+	int lastStartTime;
 };
 
 #endif /* TASK_H_ */

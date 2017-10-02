@@ -88,28 +88,4 @@ void Jobshop::getJobLeastSlackTime(std::vector<Job>& jobs)
 
 void Jobshop::schedule()
 {
-//	int machines[nJobs];
-//
-//	for (int i = 0; i < nJobs; ++i)
-//	{
-//		machines[i] = jobs[i].getCurrentMachine();
-//	}
-//	std::vector<int> conflictingMachines = getConflictingMachines(machines);
-//
-//	for (size_t i = 0; i < conflictingMachines.size(); ++i)
-//	{
-//		if()
-//		for (size_t j = 0; j < machines; ++j)
-//		{
-//			if (machines[j] == conflictingMachines[i])
-//			{
-//				jobs[j].calculateLeastSlackTime();
-//			}
-//		}
-//
-//	}
-
-}
-std::vector<int> Jobshop::getConflictingMachines(int machines[])
-{
 }

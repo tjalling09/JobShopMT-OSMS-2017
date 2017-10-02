@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <map>
 
 class Jobshop
 {
@@ -39,7 +40,8 @@ private:
 	void createJobs(const std::vector<std::vector<int>>& aJobs);
 	void getJobLeastSlackTime(std::vector<Job>& jobs);
 	void schedule();
-	std::vector<int> getConflictingMachines(int machines[]);
+	std::map<unsigned int, unsigned long> machines;
+
 };
 
 #endif /* JOBSHOP_H_ */

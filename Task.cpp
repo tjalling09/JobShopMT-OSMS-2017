@@ -9,7 +9,7 @@
 #include "Task.h"
 
 Task::Task(const int aMachine, const int aDuration) :
-		id(0), machine(aMachine), duration(aDuration)
+		machine(aMachine), duration(aDuration)
 {
 }
 
