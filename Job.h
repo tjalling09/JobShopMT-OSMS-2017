@@ -21,6 +21,9 @@ public:
 	//Destructor
 	virtual ~Job();
 
+	Job& operator=(const Job& aJob);
+	bool operator<(const Job& aJob);
+
 	//Public functions
 	unsigned int calculateLeastSlackTime();
 	void increaseCurrentTaskIndex();
@@ -28,9 +31,12 @@ public:
 	void addTime(unsigned long time);
 	void printJob();
 	unsigned int getId() const;
+	bool getDone() const;
+
 
 private:
 	//Atributes
+	bool done;
 	unsigned int id;
 	std::vector<Task> tasks;
 	unsigned int currentTaskIndex;

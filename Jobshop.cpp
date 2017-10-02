@@ -67,7 +67,7 @@ std::vector<std::vector<unsigned int>> Jobshop::extractJobs()
 void Jobshop::createJobs(
 		const std::vector<std::vector<unsigned int>>& aJobs)
 {
-	for (size_t i = 0; i < aJobs.size(); i++)
+	for (unsigned int i = 0; i < aJobs.size(); i++)
 	{
 		Job job(i, aJobs[i]);
 		jobs.push_back(job);

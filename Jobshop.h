@@ -42,7 +42,6 @@ private:
 	void getJobLeastSlackTime(std::vector<Job>& jobs);
 	void schedule();
 	std::map<unsigned int, unsigned long> machines;
-
 };
 
 #endif /* JOBSHOP_H_ */

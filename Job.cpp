@@ -67,22 +67,11 @@ void Job::CalculateLatestStartTime(unsigned long maxFinishTime)
 		Task& previous = tasks.at(i - 1);
 		previous.setLastStartTime(current.getLastStartTime() - previous.getDuration());
 	}
-
-}
-
-unsigned int Job::calculateLeastSlackTime()
-{
-	return 0;
 }
 
 unsigned int Job::getCurrentTaskIndex() const
 {
 	return currentTaskIndex;
-}
-
-unsigned int Job::getCurrentMachine()
-{
-	return 0;
 }
 
 unsigned int Job::getCurrentTaskIndex()
