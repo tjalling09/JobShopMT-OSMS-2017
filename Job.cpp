@@ -19,18 +19,80 @@ Job::~Job()
 	// TODO Auto-generated destructor stub
 }
 
+void Job::setEarliestStart(const unsigned long aEarliestStart)
+{
+	tasks[currentTaskIndex].setEarliestStart(aEarliestStart);
+}
+
+void Job::calculateEarliestStartTime()
+{
+	if (!tasks.empty())
+	{
+		for (unsigned int i = currentTaskIndex; i < tasks.size() - 1; ++i)
+		{
+			Task& current = tasks.at(i);
+			Task& next = tasks.at(i + 1);
+			next.setEarliestStart(
+					current.getEarliestStart() + current.getDuration());
+		}
+	}
+}
+
+unsigned long Job::getEarliestFinishTime() const
+{
+	return tasks.back().getEarliestStartTime() + tasks.back().getDuration();
+}
+
+unsigned long Job::getEarliestStartTime() const
+{
+	return tasks[currentTaskIndex].getEarliestStartTime();
+}
+
+unsigned short Job::getFirstMachine() const
+{
+	return tasks[currentTaskIndex].getMachine();
+}
+
+unsigned long Job::getFirstTaskDuration() const
+{
+	return tasks[currentTaskIndex].getDuration();
+}
+
+void Job::CalculateLatestStartTime(unsigned long maxFinishTime)
+{
+	tasks.back().setLastStartTime(maxFinishTime - tasks.back().getDuration());
+	for (unsigned int i = tasks.size() - 1; i > currentTaskIndex; --i)
+	{
+		Task& current = tasks.at(i);
+		Task& previous = tasks.at(i - 1);
+		previous.setLastStartTime(current.getLastStartTime() - previous.getDuration());
+	}
+
+}
+
 unsigned int Job::calculateLeastSlackTime()
 {
 	return 0;
 }
 
-void Job::increaseCurrentTaskIndex()
+unsigned int Job::getCurrentTaskIndex() const
 {
+	return currentTaskIndex;
 }
 
 unsigned int Job::getCurrentMachine()
 {
 	return 0;
+}
+
+unsigned int Job::getCurrentTaskIndex()
+{
+	return currentTaskIndex;
+}
+
+bool Job::checkIfDone() const
+{
+	return currentTaskIndex == tasks.size();
 }
 
 void Job::addTime(unsigned long time)

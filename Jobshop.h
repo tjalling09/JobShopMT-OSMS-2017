@@ -30,6 +30,7 @@ private:
 	//Atributes
 	std::string filename;
 	std::vector<Job> jobs;
+	std::vector<Job> finishedJobs;
 	unsigned int nJobs;
 	unsigned int nMachines;
 	std::ifstream ifs;

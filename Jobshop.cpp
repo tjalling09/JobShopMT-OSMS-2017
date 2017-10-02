@@ -82,12 +82,74 @@ void Jobshop::printJobs()
 	}
 }
 
-void Jobshop::getJobLeastSlackTime(std::vector<Job>& jobs)
-{
-}
-
 void Jobshop::schedule()
 {
+	unsigned long currentTime = 0;
+	for (Job& job : jobs)
+	{
+		job.setEarliestStart(std::max(job.getEarliestStart(), currentTime));
+	}
 
+	calculateSlack();
+
+	std::sort(jobs.begin(), jobs.end());
+
+	//use of  iterator to ensure begin->end order
+	for (auto i = jobs.begin(); i != jobs.end(); ++i)
+	{
+		if ((i->getEarliestStartTime() <= currentTime)
+				&& (getFreeMachineAt(i->getFirstMachine()) <= currentTime))
+		{
+			machines[i->getFirstMachine()] = currentTime
+					+ i->getFirstTaskDuration();
+			i->increaseCurrentTaskIndex();
+		}
+	}
+
+	//Move finished jobs to scheduledJobs list.
+	auto i = jobs.end();
+	while (i > jobs.begin())
+	{
+		--i;
+		if (i->checkIfDone())
+		{
+			finishedJobs.push_back(*i);
+			jobs.erase(i);
+		}
+	}
+
+	//set time to next free machine moment
+	unsigned long nextFreeMachineMoment = INT_MAX;
+	for (auto machine : machines)
+	{
+		if (machine.second > currentTime && machine.second < nextFreeMachineMoment)
+		{
+			nextFreeMachineMoment = machine.second;
+		}
+	}
+	currentTime = nextFreeMachineMoment;
 
 }
+
+void JobShop::calculateSlack()
+{
+	unsigned long maxFinishTime = 0;
+
+	for (Job& job : jobs)
+	{
+		job.calculateEarliestStartTime();
+		maxFinishTime = std::max(maxFinishTime, job.getEarliestFinishTime()); // get maximum finish time of all jobs
+	}
+
+	for (Job& job : jobs)
+	{
+		job.determineLatestStart(maxFinish);
+	}
+}
+
+unsigned long JobShop::getFreeMachineAt(const unsigned short machineId) const
+{
+	return machines.at(machineID);
+}
+
+
