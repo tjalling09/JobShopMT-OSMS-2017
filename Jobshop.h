@@ -12,6 +12,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <map>
 
 class Jobshop
 {
@@ -35,10 +36,11 @@ private:
 
 	//Private functions
 	void extractFirstLine();
-	std::vector<std::vector<unsigned int>>& extractJobs();
-	void createJobs(const std::vector<std::vector<unsigned int>> aJobs);
+	std::vector<std::vector<unsigned int>> extractJobs();
+	void createJobs(const std::vector<std::vector<unsigned int>>& aJobs);
 	void getJobLeastSlackTime(std::vector<Job>& jobs);
 	void schedule();
+	std::map<unsigned int, unsigned long> machines;
 };
 
 #endif /* JOBSHOP_H_ */

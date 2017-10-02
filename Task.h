@@ -11,15 +11,16 @@
 class Task
 {
 public:
-	Task(const int aMachine, const int aDuration);
+	Task(const unsigned int aMachine, const unsigned long aDuration);
 	virtual ~Task();
-	int getDuration() const;
-	int getMachine() const;
+	unsigned long getDuration() const;
+	unsigned long getMachine() const;
 
 private:
-	int id;
-	int machine;
-	int duration;
+	unsigned int machine;
+	unsigned long duration;
+	unsigned long earliestStartTime;
+	unsigned long lastStartTime;
 };
 
 #endif /* TASK_H_ */

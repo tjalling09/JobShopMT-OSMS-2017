@@ -39,7 +39,7 @@ void Jobshop::extractFirstLine()
 	}
 }
 
-std::vector<std::vector<unsigned int>>& Jobshop::extractJobs()
+std::vector<std::vector<unsigned int>> Jobshop::extractJobs()
 {
 	std::vector<std::vector<unsigned int>> jobs;
 	if (!ifs.is_open())
@@ -64,7 +64,8 @@ std::vector<std::vector<unsigned int>>& Jobshop::extractJobs()
 	return jobs;
 }
 
-void Jobshop::createJobs( const std::vector<std::vector<unsigned int>>& aJobs)
+void Jobshop::createJobs(
+		const std::vector<std::vector<unsigned int>>& aJobs)
 {
 	for (unsigned int i = 0; i < aJobs.size(); i++)
 	{
@@ -87,5 +88,5 @@ void Jobshop::getJobLeastSlackTime(std::vector<Job>& jobs)
 
 void Jobshop::schedule()
 {
-	d
+
 }

@@ -16,9 +16,7 @@ class Job
 {
 public:
 	//Constructor
-	Job(const unsigned int aId, const std::vector<int>& aTasks);
-	//Copy Constructor
-	Job(const Job& aJob);
+	Job(const unsigned int aId, const std::vector<unsigned int>& aTasks);
 
 	//Destructor
 	virtual ~Job();
@@ -27,12 +25,12 @@ public:
 	bool operator<(const Job& aJob);
 
 	//Public functions
-	int calculateLeastSlackTime();
+	unsigned int calculateLeastSlackTime();
 	void increaseCurrentTaskIndex();
-	int getCurrentMachine();
-	void addTime(int time);
+	unsigned int getCurrentMachine();
+	void addTime(unsigned long time);
 	void printJob();
-	int getId() const;
+	unsigned int getId() const;
 
 private:
 	//Atributes
@@ -44,7 +42,7 @@ private:
 	unsigned long endTime;
 
 	//Private functions
-	void createTasks(const std::vector<int>& aTasks);
+	void createTasks(const std::vector<unsigned int>& aTasks);
 };
 
 #endif /* JOB_H_ */

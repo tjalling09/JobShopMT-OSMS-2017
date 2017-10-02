@@ -8,7 +8,8 @@
 #include <iostream>
 #include "Job.h"
 
-Job::Job(const unsigned int aId, const std::vector<int>& aTasks) :
+
+Job::Job(const unsigned int aId, const std::vector<unsigned int>& aTasks) :
 		id(aId), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
 {
 	createTasks(aTasks);
@@ -19,7 +20,7 @@ Job::~Job()
 	// TODO Auto-generated destructor stub
 }
 
-int Job::calculateLeastSlackTime()
+unsigned int Job::calculateLeastSlackTime()
 {
 	return 0;
 }
@@ -28,16 +29,16 @@ void Job::increaseCurrentTaskIndex()
 {
 }
 
-int Job::getCurrentMachine()
+unsigned int Job::getCurrentMachine()
 {
 	return 0;
 }
 
-void Job::addTime(int time)
+void Job::addTime(unsigned long time)
 {
 }
 
-void Job::createTasks(const std::vector<int>& aTasks)
+void Job::createTasks(const std::vector<unsigned int>& aTasks)
 {
 	for (size_t i = 0; i < aTasks.size()-1; i++)
 	{
@@ -56,7 +57,7 @@ void Job::printJob()
 	std::cout << std::endl;
 }
 
-int Job::getId() const
+unsigned int Job::getId() const
 {
 	return id;
 }
