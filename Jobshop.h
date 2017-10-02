@@ -30,14 +30,14 @@ private:
 	//Atributes
 	std::string filename;
 	std::vector<Job> jobs;
-	int nJobs;
-	int nMachines;
+	unsigned int nJobs;
+	unsigned int nMachines;
 	std::ifstream ifs;
 
 	//Private functions
 	void extractFirstLine();
-	std::vector<std::vector<int>> extractJobs();
-	void createJobs(const std::vector<std::vector<int>>& aJobs);
+	std::vector<std::vector<unsigned int>> extractJobs();
+	void createJobs(const std::vector<std::vector<unsigned int>>& aJobs);
 	void getJobLeastSlackTime(std::vector<Job>& jobs);
 	void schedule();
 	std::map<unsigned int, unsigned long> machines;
