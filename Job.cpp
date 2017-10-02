@@ -10,7 +10,7 @@
 
 
 Job::Job(const unsigned int aId, const std::vector<unsigned int>& aTasks) :
-		id(aId), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
+		id(aId), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0), done(false)
 {
 	createTasks(aTasks);
 }
@@ -36,6 +36,11 @@ unsigned int Job::getCurrentMachine()
 
 void Job::addTime(unsigned long time)
 {
+}
+
+bool Job::getDone() const
+{
+	return done;
 }
 
 void Job::createTasks(const std::vector<unsigned int>& aTasks)
