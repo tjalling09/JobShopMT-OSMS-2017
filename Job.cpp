@@ -8,7 +8,7 @@
 #include <iostream>
 #include "Job.h"
 
-Job::Job(const int aId, const std::vector<int>& aTasks) :
+Job::Job(const unsigned int aId, const std::vector<int>& aTasks) :
 		id(aId), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
 {
 	createTasks(aTasks);
