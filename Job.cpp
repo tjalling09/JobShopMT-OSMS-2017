@@ -15,6 +15,8 @@ Job::Job(const unsigned int aId, const std::vector<unsigned int>& aTasks) :
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
 	createTasks(aTasks);
+	printJob();
+
 }
 
 Job::~Job()
@@ -71,8 +73,8 @@ void Job::calculateEarliestStartTime()
 	{
 		for (unsigned int i = currentTaskIndex; i < tasks.size() - 1; ++i)
 		{
-			Task& current = tasks.at(i);
-			Task& next = tasks.at(i + 1);
+			Task& current = tasks[i];
+			Task& next = tasks[i + 1];
 			next.setEarliestStartTime(
 					current.getEarliestStartTime() + current.getDuration());
 		}
@@ -119,8 +121,8 @@ void Job::CalculateLatestStartTime(unsigned long maxFinishTime)
 	tasks.back().setLastStartTime(maxFinishTime - tasks.back().getDuration());
 	for (unsigned int i = tasks.size() - 1; i > currentTaskIndex; --i)
 	{
-		Task& current = tasks.at(i);
-		Task& previous = tasks.at(i - 1);
+		Task& current = tasks[i];
+		Task& previous = tasks[i - 1];
 		previous.setLastStartTime(current.getLastStartTime() - previous.getDuration());
 	}
 }
@@ -183,6 +185,9 @@ unsigned int Job::getId() const
 
 unsigned long Job::getSlackTime() const
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	if (tasks.empty())
 	{
 		return INT_MAX;
@@ -195,8 +200,19 @@ unsigned long Job::getSlackTime() const
 
 void Job::increaseCurrentTaskIndex()
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	if(currentTaskIndex < tasks.size())
 	{
 		++currentTaskIndex;
 	}
+}
+
+void Job::setCurrentTaskIndex(const int index)
+{
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+	currentTaskIndex = index;
 }

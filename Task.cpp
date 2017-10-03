@@ -9,7 +9,7 @@
 #include "Task.h"
 
 Task::Task(const unsigned int aMachine, const unsigned long aDuration) :
-		machine(aMachine), duration(aDuration)
+		machine(aMachine), duration(aDuration), earliestStartTime(0), lastStartTime(0)
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;

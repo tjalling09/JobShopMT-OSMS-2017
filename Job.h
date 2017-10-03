@@ -30,6 +30,7 @@ public:
 	void addTime(unsigned long time);
 	void printJob();
 
+	void setCurrentTaskIndex(const int index);
 	void setEarliestStartTime(const unsigned long aEarliestStart);
 	void calculateEarliestStartTime();
 	void CalculateLatestStartTime(unsigned long maxFinishTime);

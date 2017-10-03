@@ -24,6 +24,7 @@ public:
 	virtual ~Jobshop();
 
 	//Public functions
+	void schedule();
 	void printJobs();
 
 private:
@@ -40,10 +41,8 @@ private:
 	void extractFirstLine();
 	std::vector<std::vector<unsigned int>> extractJobs();
 	void createJobs(const std::vector<std::vector<unsigned int>>& aJobs);
-	void schedule();
 	void calculateSlack();
-	unsigned long getFreeMachineAt(const unsigned short machineId) const;
-
+	unsigned long getFreeMachineAt(const unsigned int machineId);
 	void getJobLeastSlackTime(std::vector<Job>& jobs);
 };
 
