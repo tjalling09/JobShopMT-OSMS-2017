@@ -8,6 +8,8 @@
 #include "Jobshop.h"
 #include <iostream>
 
+#define DEV
+
 int main(int argc, char **argv)
 {
 	#ifdef DEV

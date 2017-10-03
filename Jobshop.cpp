@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <iterator>
 
+#define DEV
+
 Jobshop::Jobshop(const std::string& aFilename) :
 		filename(aFilename), nJobs(0), nMachines(0), ifs(filename,
 				std::ifstream::in)

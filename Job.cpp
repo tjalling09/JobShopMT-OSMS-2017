@@ -8,6 +8,8 @@
 #include <iostream>
 #include "Job.h"
 
+#define DEV
+
 Job::Job(const unsigned int aId, const std::vector<unsigned int>& aTasks) :
 		id(aId), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
 {
