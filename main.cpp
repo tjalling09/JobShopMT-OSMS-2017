@@ -6,8 +6,16 @@
  */
 
 #include "Jobshop.h"
+#include <iostream>
 
-int main(int argc, char **argv) {
+#define DEV
+
+int main(int argc, char **argv)
+{
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+
 	if (argc > 1)
 	{
 		Jobshop jobshop(argv[1]);

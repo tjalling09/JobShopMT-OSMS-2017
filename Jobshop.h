@@ -29,19 +29,22 @@ public:
 private:
 	//Atributes
 	std::string filename;
-	std::vector<Job> jobs;
-	std::vector<Job> finishedJobs;
-	unsigned int nJobs;
-	unsigned int nMachines;
 	std::ifstream ifs;
+	unsigned int nJobs;
+	std::vector<Job> jobs;
+	unsigned int nMachines;
+	std::map<unsigned int, unsigned long> machines;
+	std::vector<Job> finishedJobs;
 
 	//Private functions
 	void extractFirstLine();
 	std::vector<std::vector<unsigned int>> extractJobs();
 	void createJobs(const std::vector<std::vector<unsigned int>>& aJobs);
-	void getJobLeastSlackTime(std::vector<Job>& jobs);
 	void schedule();
-	std::map<unsigned int, unsigned long> machines;
+	void calculateSlack();
+	unsigned long getFreeMachineAt(const unsigned short machineId) const;
+
+	void getJobLeastSlackTime(std::vector<Job>& jobs);
 };
 
 #endif /* JOBSHOP_H_ */

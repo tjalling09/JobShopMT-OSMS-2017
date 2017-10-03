@@ -13,8 +13,16 @@ class Task
 public:
 	Task(const unsigned int aMachine, const unsigned long aDuration);
 	virtual ~Task();
+
+	void setEarliestStartTime(const unsigned long aEarliestStartTime);
+	void setLastStartTime(const unsigned long aLastStartTime);
+
+	//Getters
+	unsigned long getEarliestStartTime() const;
+	unsigned long getLastStartTime() const;
 	unsigned long getDuration() const;
 	unsigned long getMachine() const;
+	unsigned long getSlackTime() const;
 
 private:
 	unsigned int machine;

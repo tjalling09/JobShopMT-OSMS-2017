@@ -18,17 +18,26 @@ Jobshop::Jobshop(const std::string& aFilename) :
 		filename(aFilename), nJobs(0), nMachines(0), ifs(filename,
 				std::ifstream::in)
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	extractFirstLine();
 	createJobs(extractJobs());
 }
 
 Jobshop::~Jobshop()
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	// TODO Auto-generated destructor stub
 }
 
 void Jobshop::extractFirstLine()
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	if (!ifs.is_open())
 	{
 		std::cout << "failed to open " << filename << std::endl;
@@ -41,6 +50,9 @@ void Jobshop::extractFirstLine()
 
 std::vector<std::vector<unsigned int>> Jobshop::extractJobs()
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	std::vector<std::vector<unsigned int>> jobs;
 	if (!ifs.is_open())
 	{
@@ -67,6 +79,9 @@ std::vector<std::vector<unsigned int>> Jobshop::extractJobs()
 void Jobshop::createJobs(
 		const std::vector<std::vector<unsigned int>>& aJobs)
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	for (unsigned int i = 0; i < aJobs.size(); i++)
 	{
 		Job job(i, aJobs[i]);
@@ -76,6 +91,9 @@ void Jobshop::createJobs(
 
 void Jobshop::printJobs()
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	for (Job job : jobs)
 	{
 		job.printJob();
@@ -84,10 +102,13 @@ void Jobshop::printJobs()
 
 void Jobshop::schedule()
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	unsigned long currentTime = 0;
 	for (Job& job : jobs)
 	{
-		job.setEarliestStart(std::max(job.getEarliestStart(), currentTime));
+		job.setEarliestStartTime(std::max(job.getEarliestStartTime(), currentTime));
 	}
 
 	calculateSlack();
@@ -131,8 +152,11 @@ void Jobshop::schedule()
 
 }
 
-void JobShop::calculateSlack()
+void Jobshop::calculateSlack()
 {
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
 	unsigned long maxFinishTime = 0;
 
 	for (Job& job : jobs)
@@ -143,13 +167,16 @@ void JobShop::calculateSlack()
 
 	for (Job& job : jobs)
 	{
-		job.determineLatestStart(maxFinish);
+		job.CalculateLatestStartTime(maxFinishTime);
 	}
 }
 
-unsigned long JobShop::getFreeMachineAt(const unsigned short machineId) const
+unsigned long Jobshop::getFreeMachineAt(const unsigned short machineId) const
 {
-	return machines.at(machineID);
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+	return machines.at(machineId);
 }
 
 

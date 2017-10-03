@@ -27,11 +27,23 @@ public:
 	//Public functions
 	unsigned int calculateLeastSlackTime();
 	void increaseCurrentTaskIndex();
-	unsigned int getCurrentMachine();
 	void addTime(unsigned long time);
 	void printJob();
+
+	void setEarliestStartTime(const unsigned long aEarliestStart);
+	void calculateEarliestStartTime();
+	void CalculateLatestStartTime(unsigned long maxFinishTime);
+	bool checkIfDone() const;
+
+	unsigned int getCurrentTaskIndex() const;
+	unsigned int getCurrentMachine();
 	unsigned int getId() const;
+	unsigned long getEarliestFinishTime() const;
+	unsigned long getEarliestStartTime() const;
+	unsigned short getFirstMachine() const;
+	unsigned long getFirstTaskDuration() const;
 	bool getDone() const;
+	unsigned long getSlackTime() const;
 
 
 private:
