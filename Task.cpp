@@ -8,8 +8,9 @@
 #include <iostream>
 #include "Task.h"
 
-#define DEV
+//#define DEV
 
+//Constructor
 Task::Task(const unsigned int aMachine, const unsigned long aDuration) :
 		machine(aMachine), duration(aDuration), earliestStartTime(0), lastStartTime(0)
 {
@@ -18,6 +19,7 @@ Task::Task(const unsigned int aMachine, const unsigned long aDuration) :
 	#endif
 }
 
+//Destructor
 Task::~Task()
 {
 	#ifdef DEV
@@ -26,6 +28,7 @@ Task::~Task()
 	// TODO Auto-generated destructor stub
 }
 
+//Setters
 void Task::setEarliestStartTime(const unsigned long aEarliestStartTime)
 {
 	#ifdef DEV
@@ -42,6 +45,7 @@ void Task::setLastStartTime(const unsigned long aLastStartTime)
 	lastStartTime = aLastStartTime;
 }
 
+//Getters
 unsigned long Task::getEarliestStartTime() const
 {
 	#ifdef DEV

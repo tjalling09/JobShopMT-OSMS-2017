@@ -16,8 +16,9 @@
 
 #define DEV
 
+//Constructor
 Jobshop::Jobshop(const std::string& aFilename) :
-		filename(aFilename), nJobs(0), nMachines(0), ifs(filename,
+		filename(aFilename), ifs(filename,
 				std::ifstream::in)
 {
 #ifdef DEV
@@ -27,6 +28,7 @@ Jobshop::Jobshop(const std::string& aFilename) :
 	createJobs(extractJobs());
 }
 
+//Destructor
 Jobshop::~Jobshop()
 {
 #ifdef DEV
@@ -35,6 +37,88 @@ Jobshop::~Jobshop()
 	// TODO Auto-generated destructor stub
 }
 
+//Public functions
+void Jobshop::schedule()
+{
+#ifdef DEV
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
+#endif
+	unsigned long currentTime = 0;
+	while (jobsInProces())
+	{
+		for (Job& job : jobs)
+		{
+			job.setEarliestStartTime(
+					std::max(job.getEarliestStartTime(), currentTime));
+		}
+
+		calculateSlack();
+
+		std::sort(jobs.begin(), jobs.end());
+
+		//use of  iterator to ensure begin->end order
+		for (auto i = jobs.begin(); i != jobs.end(); ++i)
+		{
+			if ((i->getEarliestStartTime() <= currentTime)
+					&& (getFreeMachineAt(i->getFirstMachine()) <= currentTime))
+			{
+				machines[i->getFirstMachine()] = currentTime
+						+ i->getFirstTaskDuration();
+				i->increaseCurrentTaskIndex();
+			}
+		}
+
+		//Move finished jobs to scheduledJobs list.
+//		auto job = jobs.end();
+//		while (job > jobs.begin())
+//		{
+//
+//			--job;
+//			if (job->checkIfDone())
+//			{
+//				finishedJobs.push_back(*job);
+//				jobs.erase(job);
+//			}
+//		}
+
+		//set time to next free machine moment
+		unsigned long nextFreeMachineMoment = INT_MAX;
+		for (auto machine : machines)
+		{
+			if (machine.second > currentTime
+					&& machine.second < nextFreeMachineMoment)
+			{
+				nextFreeMachineMoment = machine.second;
+			}
+		}
+		currentTime = nextFreeMachineMoment;
+	}
+}
+
+void Jobshop::printJobs()
+{
+#ifdef DEV
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
+#endif
+	for (Job& job : jobs)
+	{
+		job.setCurrentTaskIndex(0);
+	}
+
+	std::sort(jobs.begin(), jobs.end(),
+			[](const Job& j1, const Job& j2)
+			{
+				return j1.getId() < j2.getId();
+			});
+
+	for (const Job& job : jobs)
+	{
+		std::cout << "Job "<< job.getId() << ": \t" << job.getEarliestStartTime() << "\t"
+				<< job.getEarliestFinishTime() << std::endl;
+	}
+}
+
+//Private functions
 void Jobshop::extractFirstLine()
 {
 #ifdef DEV
@@ -91,62 +175,6 @@ void Jobshop::createJobs(const std::vector<std::vector<unsigned int>>& aJobs)
 	}
 }
 
-void Jobshop::schedule()
-{
-#ifdef DEV
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-#endif
-	unsigned long currentTime = 0;
-	while (!jobs.empty())
-	{
-		for (Job& job : jobs)
-		{
-			job.setEarliestStartTime(
-					std::max(job.getEarliestStartTime(), currentTime));
-		}
-
-		calculateSlack();
-
-		std::sort(jobs.begin(), jobs.end());
-
-		//use of  iterator to ensure begin->end order
-		for (auto i = jobs.begin(); i != jobs.end(); ++i)
-		{
-			if ((i->getEarliestStartTime() <= currentTime)
-					&& (getFreeMachineAt(i->getFirstMachine()) <= currentTime))
-			{
-				machines[i->getFirstMachine()] = currentTime
-						+ i->getFirstTaskDuration();
-				i->increaseCurrentTaskIndex();
-			}
-		}
-
-		//Move finished jobs to scheduledJobs list.
-		auto i = jobs.end();
-		while (i > jobs.begin())
-		{
-			--i;
-			if (i->checkIfDone())
-			{
-				finishedJobs.push_back(*i);
-				jobs.erase(i);
-			}
-		}
-
-		//set time to next free machine moment
-		unsigned long nextFreeMachineMoment = INT_MAX;
-		for (auto machine : machines)
-		{
-			if (machine.second > currentTime
-					&& machine.second < nextFreeMachineMoment)
-			{
-				nextFreeMachineMoment = machine.second;
-			}
-		}
-		currentTime = nextFreeMachineMoment;
-	}
-}
-
 void Jobshop::calculateSlack()
 {
 #ifdef DEV
@@ -162,38 +190,31 @@ void Jobshop::calculateSlack()
 
 	for (Job& job : jobs)
 	{
-		job.CalculateLatestStartTime(maxFinishTime);
+		job.calculateLatestStartTime(maxFinishTime);
 	}
 }
 
+bool Jobshop::jobsInProces()
+{
+	for(Job& job : jobs)
+	{
+		if(job.checkIfDone() == false)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+//Getter
 unsigned long Jobshop::getFreeMachineAt(const unsigned int machineId)
 {
 #ifdef DEV
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 #endif
-	return machines[machineId];
+	auto machine = machines.find(machineId);
+	return machine->second;
 }
 
-void Jobshop::printJobs()
-{
-#ifdef DEV
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-#endif
-	for (Job& job : finishedJobs)
-	{
-		job.setCurrentTaskIndex(0);
-	}
-
-	std::sort(finishedJobs.begin(), finishedJobs.end(),
-			[](const Job& j1, const Job& j2)
-			{
-				return j1.getId() < j2.getId();
-			});
-
-	for (const Job& job : finishedJobs)
-	{
-		std::cout << "Job "<< job.getId() << ": \t" << job.getEarliestStartTime() << "\t"
-				<< job.getEarliestFinishTime() << std::endl;
-	}
-}
 

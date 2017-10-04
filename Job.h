@@ -21,29 +21,29 @@ public:
 	//Destructor
 	virtual ~Job();
 
+	//Operators
 	Job& operator=(const Job& aJob);
 	bool operator<(const Job& aJob);
 
 	//Public functions
-	unsigned int calculateLeastSlackTime();
+	void calculateEarliestStartTime();
+	void calculateLatestStartTime(unsigned long maxFinishTime);
 	void increaseCurrentTaskIndex();
 	void addTime(unsigned long time);
+	bool checkIfDone() const;
 	void printJob();
 
-	void setCurrentTaskIndex(const int index);
+	//Setters
 	void setEarliestStartTime(const unsigned long aEarliestStart);
-	void calculateEarliestStartTime();
-	void CalculateLatestStartTime(unsigned long maxFinishTime);
-	bool checkIfDone() const;
+	void setCurrentTaskIndex(const int index);
 
-	unsigned int getCurrentTaskIndex() const;
-	unsigned int getCurrentMachine();
+	//Getters
 	unsigned int getId() const;
-	unsigned long getEarliestFinishTime() const;
 	unsigned long getEarliestStartTime() const;
-	unsigned short getFirstMachine() const;
+	unsigned long getEarliestFinishTime() const;
+	unsigned int getCurrentTaskIndex() const;
+	unsigned int getFirstMachine() const;
 	unsigned long getFirstTaskDuration() const;
-	bool getDone() const;
 	unsigned long getSlackTime() const;
 
 

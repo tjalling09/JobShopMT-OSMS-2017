@@ -35,15 +35,17 @@ private:
 	std::vector<Job> jobs;
 	unsigned int nMachines;
 	std::map<unsigned int, unsigned long> machines;
-	std::vector<Job> finishedJobs;
+//	std::vector<Job> finishedJobs;
 
 	//Private functions
 	void extractFirstLine();
 	std::vector<std::vector<unsigned int>> extractJobs();
 	void createJobs(const std::vector<std::vector<unsigned int>>& aJobs);
 	void calculateSlack();
+	bool jobsInProces();
+
+	//Getter
 	unsigned long getFreeMachineAt(const unsigned int machineId);
-	void getJobLeastSlackTime(std::vector<Job>& jobs);
 };
 
 #endif /* JOBSHOP_H_ */

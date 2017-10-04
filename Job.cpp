@@ -8,8 +8,9 @@
 #include <iostream>
 #include "Job.h"
 
-#define DEV
+//#define DEV
 
+//Constructor
 Job::Job(const unsigned int aId, const std::vector<unsigned int>& aTasks) :
 		id(aId), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
 {
@@ -21,6 +22,7 @@ Job::Job(const unsigned int aId, const std::vector<unsigned int>& aTasks) :
 
 }
 
+//Destructor
 Job::~Job()
 {
 	#ifdef DEV
@@ -29,6 +31,7 @@ Job::~Job()
 	// TODO Auto-generated destructor stub
 }
 
+//Operators
 Job& Job::operator=(const Job& aJob)
 {
 	#ifdef DEV
@@ -58,14 +61,7 @@ bool Job::operator<(const Job& aJob)
 	}
 }
 
-void Job::setEarliestStartTime(const unsigned long aEarliestStart)
-{
-	#ifdef DEV
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
-	#endif
-	tasks[currentTaskIndex].setEarliestStartTime(aEarliestStart);
-}
-
+//Public functions
 void Job::calculateEarliestStartTime()
 {
 	#ifdef DEV
@@ -83,39 +79,7 @@ void Job::calculateEarliestStartTime()
 	}
 }
 
-unsigned long Job::getEarliestFinishTime() const
-{
-	#ifdef DEV
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
-	#endif
-	return tasks.back().getEarliestStartTime() + tasks.back().getDuration();
-}
-
-unsigned long Job::getEarliestStartTime() const
-{
-	#ifdef DEV
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
-	#endif
-	return tasks[currentTaskIndex].getEarliestStartTime();
-}
-
-unsigned short Job::getFirstMachine() const
-{
-	#ifdef DEV
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
-	#endif
-	return tasks[currentTaskIndex].getMachine();
-}
-
-unsigned long Job::getFirstTaskDuration() const
-{
-	#ifdef DEV
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
-	#endif
-	return tasks[currentTaskIndex].getDuration();
-}
-
-void Job::CalculateLatestStartTime(unsigned long maxFinishTime)
+void Job::calculateLatestStartTime(unsigned long maxFinishTime)
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
@@ -129,20 +93,15 @@ void Job::CalculateLatestStartTime(unsigned long maxFinishTime)
 	}
 }
 
-unsigned int Job::getCurrentTaskIndex() const
+void Job::increaseCurrentTaskIndex()
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	return currentTaskIndex;
-}
-
-bool Job::checkIfDone() const
-{
-	#ifdef DEV
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
-	#endif
-	return currentTaskIndex == tasks.size();
+	if(currentTaskIndex < tasks.size())
+	{
+		++currentTaskIndex;
+	}
 }
 
 void Job::addTime(unsigned long time)
@@ -152,16 +111,12 @@ void Job::addTime(unsigned long time)
 	#endif
 }
 
-void Job::createTasks(const std::vector<unsigned int>& aTasks)
+bool Job::checkIfDone() const
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	for (size_t i = 0; i < aTasks.size()-1; i++)
-	{
-		Task task(aTasks[i],aTasks[i+1]);
-		tasks.push_back(task);
-	}
+	return currentTaskIndex == tasks.size();
 }
 
 void Job::printJob()
@@ -177,12 +132,70 @@ void Job::printJob()
 	std::cout << std::endl;
 }
 
+//Setters
+void Job::setEarliestStartTime(const unsigned long aEarliestStart)
+{
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+	tasks[currentTaskIndex].setEarliestStartTime(aEarliestStart);
+}
+
+void Job::setCurrentTaskIndex(const int index)
+{
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+	currentTaskIndex = index;
+}
+
+//Getters
 unsigned int Job::getId() const
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
 	return id;
+}
+
+unsigned long Job::getEarliestStartTime() const
+{
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+	return tasks[currentTaskIndex].getEarliestStartTime();
+}
+
+unsigned long Job::getEarliestFinishTime() const
+{
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+	return tasks.back().getEarliestStartTime() + tasks.back().getDuration();
+}
+
+unsigned int Job::getCurrentTaskIndex() const
+{
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+	return currentTaskIndex;
+}
+
+unsigned int Job::getFirstMachine() const
+{
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+	return tasks[currentTaskIndex].getMachine();
+}
+
+unsigned long Job::getFirstTaskDuration() const
+{
+	#ifdef DEV
+		std::cout << __PRETTY_FUNCTION__ << std::endl;
+	#endif
+	return tasks[currentTaskIndex].getDuration();
 }
 
 unsigned long Job::getSlackTime() const
@@ -200,21 +213,15 @@ unsigned long Job::getSlackTime() const
 	}
 }
 
-void Job::increaseCurrentTaskIndex()
+//Private functions
+void Job::createTasks(const std::vector<unsigned int>& aTasks)
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	if(currentTaskIndex < tasks.size())
+	for (size_t i = 0; i < aTasks.size()-1; i++)
 	{
-		++currentTaskIndex;
+		Task task(aTasks[i],aTasks[i+1]);
+		tasks.push_back(task);
 	}
-}
-
-void Job::setCurrentTaskIndex(const int index)
-{
-	#ifdef DEV
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
-	#endif
-	currentTaskIndex = index;
 }

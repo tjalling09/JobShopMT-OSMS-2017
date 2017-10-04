@@ -11,9 +11,13 @@
 class Task
 {
 public:
+	//Constructor
 	Task(const unsigned int aMachine, const unsigned long aDuration);
+
+	//Destructor
 	virtual ~Task();
 
+	//Setters
 	void setEarliestStartTime(const unsigned long aEarliestStartTime);
 	void setLastStartTime(const unsigned long aLastStartTime);
 
