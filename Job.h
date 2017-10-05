@@ -16,7 +16,8 @@ class Job
 {
 public:
 	//Constructor
-	Job(const unsigned int aId, const std::vector<Task>& aTasks);
+	Job(const int aId, const std::vector<std::pair<int, int>>& aTasks);
+
 
 	//Destructor
 	virtual ~Job();
@@ -58,7 +59,7 @@ private:
 	unsigned long endTime;
 
 	//Private functions
-	void createTasks(const std::vector<unsigned int>& aTasks);
+	void createTasks(const std::vector<std::pair<int, int>>& aTasks);
 };
 
 #endif /* JOB_H_ */

@@ -11,12 +11,13 @@
 //#define DEV
 
 //Constructor
-Job::Job(const unsigned int aId, const std::vector<Task>& aTasks) :
-		id(aId), tasks(aTasks), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
+Job::Job(const int aId, const std::vector<std::pair<int, int>>& aTasks) :
+		id(aId), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
+	createTasks(aTasks);
 	//printJob();
 
 }
@@ -213,14 +214,14 @@ unsigned long Job::getSlackTime() const
 }
 
 //Private functions
-void Job::createTasks(const std::vector<unsigned int>& aTasks)
+void Job::createTasks(const std::vector<std::pair<int,int>>& aTasks)
 {
-	#ifdef DEV
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
-	#endif
-	for (size_t i = 0; i < aTasks.size()-1; i++)
+#ifdef DEV
+	std::cout << __PRETTY_FUNCTION__ << std::endl;
+#endif
+	for (size_t i = 0; i < aTasks.size(); i++)
 	{
-		Task task(aTasks[i],aTasks[i+1]);
+		Task task(aTasks[i].first,aTasks[i].second);
 		tasks.push_back(task);
 	}
 }

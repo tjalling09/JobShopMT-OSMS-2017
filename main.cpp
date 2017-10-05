@@ -28,7 +28,7 @@ int main(int argc, char **argv)
 	{
 		std::cout << "Start Scheduling..."<< std::endl;
 
-		Jobshop jobshop("Data/6x6.txt");
+		Jobshop jobshop("Data/10x10.txt");
 		jobshop.schedule();
 		jobshop.printJobs();
 

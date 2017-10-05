@@ -18,12 +18,14 @@
 //#define DEV
 
 //Constructor
-Jobshop::Jobshop(const std::string& aFilename)
+Jobshop::Jobshop(const std::string& aFilename) : filename(aFilename), ifs(filename,
+		std::ifstream::in)
 {
 #ifdef DEV
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 #endif
-	extractJobs (aFilename);
+	extractFirstLine();
+	createJobs(extractJobs());
 }
 
 //Destructor
@@ -107,6 +109,7 @@ void Jobshop::printJobs()
 	{
 		return j1.getId() < j2.getId();
 	});
+	std::cout << "\nJobs: " << nJobs << "\tMachines: " << nMachines << "\n" << std::endl;
 	std::cout << "id\t" << "start\t" << "finish" << std::endl;
 	for (const Job& job : jobs)
 	{
@@ -162,43 +165,154 @@ void Jobshop::printJobs()
 //
 //}
 
-void Jobshop::extractJobs(const std::string& filename)
+//void Jobshop::extractJobs(const std::string& filename)
+//{
+//	std::ifstream source;
+//	std::string line;
+//	std::regex rNumberPair("^\\s*([0-9]+)\\s+([0-9]+)\\s*"); //  to match some number, some white spaces, and some number again
+//	std::smatch matches;
+//
+//	source.open(filename);
+//	std::getline(source, line);
+//
+//	// Search for first pair (job amount and machine amount)
+//	if (!std::regex_search(line, matches, rNumberPair))
+//	{
+//		throw std::logic_error("no jobs/machine amount found on first line");
+//	}
+//
+//	size_t jobAmount = std::stoul(matches[1], 0, 10);
+////	size_t machineAmount = std::stoul(matches[2], 0, 10);
+//
+//	for (size_t i = 0; i < jobAmount; ++i)
+//	{
+//		std::vector<Task> tasks;
+//		for (std::getline(source, line);
+//				std::regex_search(line, matches, rNumberPair);
+//				line = matches.suffix())
+//		{
+//			// Get machineId and duration
+//			unsigned int machineId = std::stoul(matches[1], 0, 10);
+//			unsigned int duration = std::stoul(matches[2], 0, 10);
+//
+//			machines[machineId] = 0;
+//
+//			Task task(machineId, duration);
+//			tasks.push_back(task);
+//
+//		}
+//		Job job(i, tasks);
+//		jobs.push_back(job);
+//	}
+//	std::ifstream inputFile;
+//	inputFile.open(filename);
+//	if (inputFile.is_open())
+//	{
+//		std::regex numPairRegex("[[:space:]]*"   //ignore leading space
+//						"([[:digit:]]+)[[:space:]]+([[:digit:]]+)"//num1<space>num2
+//						"[[:space:]]*");//ignore trailing space
+//		std::smatch matchResult;
+//		std::string line;
+//
+//		getline(inputFile, line); 							//read header line
+//		if (std::regex_match(line, matchResult, numPairRegex))
+//		{
+//			nJobs = stoi(matchResult[1]);
+//			nMachines = stoi(matchResult[2]);
+//
+//			unsigned short jobID = 0;
+//			while (inputFile.good())	//read jobs
+//			{
+//				getline(inputFile, line);
+//				if (std::regex_search(line, matchResult, numPairRegex)) //line contains job?
+//				{
+//					std::vector<Task> tasks;
+//					while (std::regex_search(line, matchResult, numPairRegex)) // read tasks
+//					{
+//						unsigned int machine = stoi(matchResult[1]);
+//						unsigned long duration = stoul(matchResult[2]);
+//						Task tempTask(machine, duration);
+//						tasks.push_back(tempTask);
+//						machines[machine] = 0;
+//
+//						line = matchResult.suffix().str();
+//					}
+//					if (!line.empty()) //non-task data left on line
+//					{
+//						std::cerr << "FILE ERROR: Format of job " << jobID
+//								<< " incorrect" << std::endl;
+//					}
+//					Job tempJob(jobID,tasks);
+//					jobs.push_back(tempJob);
+//					++jobID;
+//				}
+//			}
+//			if (nJobs != jobID)
+//			{
+//				std::cerr << "FILE ERROR: Expected jobs: " << nJobs
+//						<< "\t" << "actual Jobs:" << jobID << std::endl;
+//			}
+//			else if (nMachines != machines.size())
+//			{
+//				std::cerr << "FILE ERROR: Expected machines: "
+//						<< nMachines << "\t" << "actual machines:"
+//						<< machines.size() << std::endl;
+//			}
+//		}
+//		else
+//		{
+//			std::cerr << "FILE ERROR: Format of header incorrect" << std::endl;
+//		}
+//	}
+//	else
+//	{
+//		std::cerr << "FILE ERROR: Cannot open file \"" << filename << "\""
+//				<< std::endl;
+//	}
+//
+//}
+
+void Jobshop::extractFirstLine()
 {
-	std::ifstream source;
-	std::string line;
-	std::regex rNumberPair("^\\s*([0-9]+)\\s+([0-9]+)\\s*"); //  to match some number, some white spaces, and some number again
-	std::smatch matches;
-
-	source.open(filename);
-	std::getline(source, line);
-
-	// Search for first pair (job amount and machine amount)
-	if (!std::regex_search(line, matches, rNumberPair))
+	if (!ifs.is_open())
 	{
-		throw std::logic_error("no jobs/machine amount found on first line");
+		std::cout << "failed to open " << filename << std::endl;
 	}
-
-	size_t jobAmount = std::stoul(matches[1], 0, 10);
-//	size_t machineAmount = std::stoul(matches[2], 0, 10);
-
-	for (size_t i = 0; i < jobAmount; ++i)
+	else
 	{
-		std::vector<Task> tasks;
-		for (std::getline(source, line);
-				std::regex_search(line, matches, rNumberPair);
-				line = matches.suffix())
+		ifs >> nJobs >> nMachines;
+	}
+}
+
+std::vector<std::vector<std::pair<int, int>>> Jobshop::extractJobs()
+{
+	std::vector<std::vector<std::pair<int, int>>> jobs;
+	if (!ifs.is_open())
+	{
+		std::cout << "failed to open " << filename << std::endl;
+	}
+	else
+	{
+		std::vector<std::pair<int, int>> job;
+		int machine, duration;
+		while (ifs >> machine >> duration)
 		{
-			// Get machineId and duration
-			unsigned int machineId = std::stoul(matches[1], 0, 10);
-			unsigned int duration = std::stoul(matches[2], 0, 10);
-
-			machines[machineId] = 0;
-
-			Task task(machineId, duration);
-			tasks.push_back(task);
-
+			job.push_back(std::make_pair(machine, duration));
+			if (ifs.peek() == '\n' || ifs.peek() == EOF)
+			{
+				jobs.push_back(job);
+				job.clear();
+			}
 		}
-		Job job(i, tasks);
+	}
+	return jobs;
+}
+
+void Jobshop::createJobs(const std::vector<std::vector<std::pair<int, int>>>& aJobs)
+{
+	for (size_t i = 0; i < aJobs.size(); i++)
+	{
+		Job job(i, aJobs[i]);
 		jobs.push_back(job);
 	}
 }
