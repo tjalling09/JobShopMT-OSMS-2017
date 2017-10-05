@@ -16,8 +16,7 @@ class Job
 {
 public:
 	//Constructor
-	Job(const int aId, const std::vector<std::pair<int, int>>& aTasks);
-
+	Job(const unsigned int aId, const std::vector<Task>& aTasks);
 
 	//Destructor
 	virtual ~Job();
@@ -36,7 +35,7 @@ public:
 
 	//Setters
 	void setEarliestStartTime(const unsigned long aEarliestStart);
-	void setCurrentTaskIndex(const int index);
+	void setCurrentTaskIndex(const unsigned int index);
 
 	//Getters
 	unsigned int getId() const;
@@ -59,7 +58,7 @@ private:
 	unsigned long endTime;
 
 	//Private functions
-	void createTasks(const std::vector<std::pair<int, int>>& aTasks);
+//	void createTasks(const std::vector<unsigned int>& aTasks);
 };
 
 #endif /* JOB_H_ */

@@ -29,18 +29,16 @@ public:
 
 private:
 	//Atributes
-	std::string filename;
-	std::ifstream ifs;
 	unsigned int nJobs;
 	std::vector<Job> jobs;
+	std::vector<Job> finishedJobs;
 	unsigned int nMachines;
 	std::map<unsigned int, unsigned long> machines;
-//	std::vector<Job> finishedJobs;
 
 	//Private functions
 	void extractFirstLine();
-	std::vector<std::vector<std::pair<int,int>>> extractJobs();
-	void createJobs(const std::vector<std::vector<std::pair<int,int>>>& aJobs);
+	void extractJobs(const std::string& filename);
+	void createJobs(const std::vector<std::vector<unsigned int>>& aJobs);
 	void calculateSlack();
 	bool jobsInProces();
 

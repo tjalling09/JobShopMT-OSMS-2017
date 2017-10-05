@@ -24,15 +24,9 @@ int main(int argc, char **argv)
 		jobshop.printJobs();
 
 		std::cout << "Scheduling finished!"<< std::endl;
-	}else
-	{
-		std::cout << "Start Scheduling..."<< std::endl;
-
-		Jobshop jobshop("Data/10x10.txt");
-		jobshop.schedule();
-		jobshop.printJobs();
-
-		std::cout << "Scheduling finished!"<< std::endl;
+	}
+	else {
+		std::cout << "Please add input file!"<< std::endl;
 	}
 	return 0;
 }
