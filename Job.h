@@ -16,7 +16,7 @@ class Job
 {
 public:
 	//Constructor
-	Job(const unsigned int aId, const std::vector<unsigned int>& aTasks);
+	Job(const unsigned int aId, const std::vector<Task>& aTasks);
 
 	//Destructor
 	virtual ~Job();

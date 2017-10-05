@@ -29,8 +29,6 @@ public:
 
 private:
 	//Atributes
-	std::string filename;
-	std::ifstream ifs;
 	unsigned int nJobs;
 	std::vector<Job> jobs;
 	unsigned int nMachines;
@@ -39,7 +37,7 @@ private:
 
 	//Private functions
 	void extractFirstLine();
-	std::vector<std::vector<unsigned int>> extractJobs();
+	void extractJobs(const std::string& filename);
 	void createJobs(const std::vector<std::vector<unsigned int>>& aJobs);
 	void calculateSlack();
 	bool jobsInProces();

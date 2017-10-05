@@ -8,7 +8,7 @@
 #include "Jobshop.h"
 #include <iostream>
 
-#define DEV
+//#define DEV
 
 int main(int argc, char **argv)
 {
@@ -28,13 +28,12 @@ int main(int argc, char **argv)
 	{
 		std::cout << "Start Scheduling..."<< std::endl;
 
-		Jobshop jobshop("Debug/jobs.txt");
+		Jobshop jobshop("Data/6x6.txt");
 		jobshop.schedule();
 		jobshop.printJobs();
 
 		std::cout << "Scheduling finished!"<< std::endl;
 	}
-
-
+	return 0;
 }
 

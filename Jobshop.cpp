@@ -13,19 +13,17 @@
 #include <array>
 #include <algorithm>
 #include <iterator>
+#include <regex>
 
-#define DEV
+//#define DEV
 
 //Constructor
-Jobshop::Jobshop(const std::string& aFilename) :
-		filename(aFilename), ifs(filename,
-				std::ifstream::in)
+Jobshop::Jobshop(const std::string& aFilename)
 {
 #ifdef DEV
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 #endif
-	extractFirstLine();
-	createJobs(extractJobs());
+	extractJobs (aFilename);
 }
 
 //Destructor
@@ -81,7 +79,7 @@ void Jobshop::schedule()
 //			}
 //		}
 
-		//set time to next free machine moment
+//set time to next free machine moment
 		unsigned long nextFreeMachineMoment = INT_MAX;
 		for (auto machine : machines)
 		{
@@ -105,75 +103,117 @@ void Jobshop::printJobs()
 		job.setCurrentTaskIndex(0);
 	}
 
-	std::sort(jobs.begin(), jobs.end(),
-			[](const Job& j1, const Job& j2)
-			{
-				return j1.getId() < j2.getId();
-			});
-
+	std::sort(jobs.begin(), jobs.end(), [](const Job& j1, const Job& j2)
+	{
+		return j1.getId() < j2.getId();
+	});
+	std::cout << "id\t" << "start\t" << "finish" << std::endl;
 	for (const Job& job : jobs)
 	{
-		std::cout << "Job "<< job.getId() << ": \t" << job.getEarliestStartTime() << "\t"
+		std::cout << job.getId() << "\t" << job.getEarliestStartTime() << "\t"
 				<< job.getEarliestFinishTime() << std::endl;
 	}
 }
 
 //Private functions
-void Jobshop::extractFirstLine()
-{
-#ifdef DEV
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-#endif
-	if (!ifs.is_open())
-	{
-		std::cout << "failed to open " << filename << std::endl;
-	}
-	else
-	{
-		ifs >> nJobs >> nMachines;
-	}
-}
+//void Jobshop::extractFirstLine()
+//{
+//#ifdef DEV
+//	std::cout << __PRETTY_FUNCTION__ << std::endl;
+//#endif
+//	if (!ifs.is_open())
+//	{
+//		std::cout << "failed to open " << filename << std::endl;
+//	}
+//	else
+//	{
+//		ifs >> nJobs >> nMachines;
+//	}
+//}
 
-std::vector<std::vector<unsigned int>> Jobshop::extractJobs()
+//std::vector<std::vector<unsigned int>> Jobshop::extractJobs()
+//{
+//#ifdef DEV
+//	std::cout << __PRETTY_FUNCTION__ << std::endl;
+//#endif
+//	std::vector<std::vector<unsigned int>> jobs;
+//	if (!ifs.is_open())
+//	{
+//		std::cout << "failed to open " << filename << std::endl;
+//	}
+//	else
+//	{
+//		std::vector<unsigned int> job;
+//		int machine, duration;
+//			while(ifs.peek() != EOF)
+//			{
+//				ifs >> machine >> duration;
+//				machines[machine] = 0;
+//				job.push_back(machine);
+//				job.push_back(duration);
+//				if (ifs.peek() == '\n')
+//				{
+//					jobs.push_back(job);
+//					job.clear();
+//				}
+//			}
+//	}
+//	return jobs;
+//
+//}
+
+void Jobshop::extractJobs(const std::string& filename)
 {
-#ifdef DEV
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-#endif
-	std::vector<std::vector<unsigned int>> jobs;
-	if (!ifs.is_open())
+	std::ifstream source;
+	std::string line;
+	std::regex rNumberPair("^\\s*([0-9]+)\\s+([0-9]+)\\s*"); //  to match some number, some white spaces, and some number again
+	std::smatch matches;
+
+	source.open(filename);
+	std::getline(source, line);
+
+	// Search for first pair (job amount and machine amount)
+	if (!std::regex_search(line, matches, rNumberPair))
 	{
-		std::cout << "failed to open " << filename << std::endl;
+		throw std::logic_error("no jobs/machine amount found on first line");
 	}
-	else
+
+	size_t jobAmount = std::stoul(matches[1], 0, 10);
+//	size_t machineAmount = std::stoul(matches[2], 0, 10);
+
+	for (size_t i = 0; i < jobAmount; ++i)
 	{
-		std::vector<unsigned int> job;
-		int machine, duration;
-		while (ifs >> machine >> duration)
+		std::vector<Task> tasks;
+		for (std::getline(source, line);
+				std::regex_search(line, matches, rNumberPair);
+				line = matches.suffix())
 		{
-			machines[machine] = 0;
-			job.push_back(machine);
-			job.push_back(duration);
-			if (ifs.peek() == '\n' || ifs.peek() == EOF)
-			{
-				jobs.push_back(job);
-				job.clear();
-			}
-		}
-	}
-	return jobs;
-}
+			// Get machineId and duration
+			unsigned int machineId = std::stoul(matches[1], 0, 10);
+			unsigned int duration = std::stoul(matches[2], 0, 10);
 
-void Jobshop::createJobs(const std::vector<std::vector<unsigned int>>& aJobs)
-{
-#ifdef DEV
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-#endif
-	for (unsigned int i = 0; i < aJobs.size(); i++)
-	{
-		Job job(i, aJobs[i]);
+			machines[machineId] = 0;
+
+			Task task(machineId, duration);
+			tasks.push_back(task);
+
+		}
+		Job job(i, tasks);
 		jobs.push_back(job);
 	}
 }
+
+//void Jobshop::createJobs(const std::vector<std::vector<unsigned int>>& aJobs)
+//{
+//#ifdef DEV
+//	std::cout << __PRETTY_FUNCTION__ << std::endl;
+//#endif
+//	for (unsigned int i = 0; i < aJobs.size(); i++)
+//	{
+//		Job job(i, aJobs[i]);
+//		jobs.push_back(job);
+//	}
+//}
 
 void Jobshop::calculateSlack()
 {
@@ -196,16 +236,15 @@ void Jobshop::calculateSlack()
 
 bool Jobshop::jobsInProces()
 {
-	for(Job& job : jobs)
+	for (Job& job : jobs)
 	{
-		if(job.checkIfDone() == false)
+		if (job.checkIfDone() == false)
 		{
 			return true;
 		}
 	}
 	return false;
 }
-
 
 //Getter
 unsigned long Jobshop::getFreeMachineAt(const unsigned int machineId)
@@ -216,5 +255,4 @@ unsigned long Jobshop::getFreeMachineAt(const unsigned int machineId)
 	auto machine = machines.find(machineId);
 	return machine->second;
 }
-
 

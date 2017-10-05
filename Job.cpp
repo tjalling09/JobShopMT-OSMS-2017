@@ -11,14 +11,13 @@
 //#define DEV
 
 //Constructor
-Job::Job(const unsigned int aId, const std::vector<unsigned int>& aTasks) :
-		id(aId), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
+Job::Job(const unsigned int aId, const std::vector<Task>& aTasks) :
+		id(aId), tasks(aTasks), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	createTasks(aTasks);
-	printJob();
+	//printJob();
 
 }
 
