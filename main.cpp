@@ -25,8 +25,9 @@ int main(int argc, char **argv)
 
 		std::cout << "Scheduling finished!"<< std::endl;
 	}
-	else {
-		std::cout << "Please add input file!"<< std::endl;
+	else
+	{
+		std::cout << "Please add an input file!"<< std::endl;
 	}
 	return 0;
 }

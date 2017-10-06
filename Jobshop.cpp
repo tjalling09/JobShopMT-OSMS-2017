@@ -46,7 +46,8 @@ void Jobshop::schedule()
 	{
 		for (Job& job : jobs)
 		{
-			job.setEarliestStartTime(std::max(job.getEarliestStartTime(), currentTime));
+			job.setEarliestStartTime(
+					std::max(job.getEarliestStartTime(), currentTime));
 		}
 
 		calculateSlack();
@@ -60,7 +61,7 @@ void Jobshop::schedule()
 			{
 				machines[i->getFirstMachine()] = currentTime
 						+ i->getFirstTaskDuration();
-					i->increaseCurrentTaskIndex();
+				i->increaseCurrentTaskIndex();
 			}
 		}
 
@@ -98,11 +99,13 @@ void Jobshop::printJobs()
 		job.setCurrentTaskIndex(0);
 	}
 
-	std::sort(finishedJobs.begin(), finishedJobs.end(), [](const Job& j1, const Job& j2)
-	{
-		return j1.getId() < j2.getId();
-	});
-	std::cout << "\nJobs: " << nJobs << "\tMachines: " << nMachines << "\n" << std::endl;
+	std::sort(finishedJobs.begin(), finishedJobs.end(),
+			[](const Job& j1, const Job& j2)
+			{
+				return j1.getId() < j2.getId();
+			});
+	std::cout << "\nJobs: " << nJobs << "\tMachines: " << nMachines << "\n"
+			<< std::endl;
 	std::cout << "id\t" << "start\t" << "finish" << std::endl;
 	for (const Job& job : finishedJobs)
 	{
@@ -111,73 +114,53 @@ void Jobshop::printJobs()
 	}
 }
 
-
 void Jobshop::extractJobs(const std::string& filename)
 {
 	std::ifstream inputFile;
 	inputFile.open(filename);
 	if (inputFile.is_open())
 	{
-		std::regex numPairRegex("[[:space:]]*"   //ignore leading space
-						"([[:digit:]]+)[[:space:]]+([[:digit:]]+)"//num1<space>num2
-						"[[:space:]]*");//ignore trailing space
-		std::smatch matchResult;
 		std::string line;
+		std::regex numPairRegex("^\\s*(\\[0-9]+)\\s+(\\[0-9]+)\\s*"); //  to match some number, some white spaces, and some number again
+		std::smatch matches;
 
-		getline(inputFile, line); 							//read header line
-		if (std::regex_match(line, matchResult, numPairRegex))
+		inputFile.open(filename);
+		std::getline(inputFile, line);
+
+		// Search for first pair (job amount and machine amount)
+		if (std::regex_search(line, matches, numPairRegex))
 		{
-			nJobs = stoi(matchResult[1]);
-			nMachines = stoi(matchResult[2]);
+			nJobs = std::stoi(matches[1], 0, 10);
+			nMachines = std::stoi(matches[2], 0, 10);
 
-			unsigned short jobID = 0;
-			while (inputFile.good())	//read jobs
+			for (size_t i = 0; i < nJobs; ++i)
 			{
 				getline(inputFile, line);
-				if (std::regex_search(line, matchResult, numPairRegex)) //line contains job?
+				if (std::regex_search(line, matches, numPairRegex)) //line contains job?
 				{
-					std::vector<Task> tasks;
-					while (std::regex_search(line, matchResult, numPairRegex)) // read tasks
+					std::vector<Task> tempTasks;
+					while (std::regex_search(line, matches, numPairRegex)) // read tasks
 					{
-						unsigned int machine = stoi(matchResult[1]);
-						unsigned long duration = stoul(matchResult[2]);
-						Task tempTask(machine, duration);
-						tasks.push_back(tempTask);
-						machines[machine] = 0;
-
-						line = matchResult.suffix().str();
+						unsigned int machineId = stoi(matches[1]);
+						unsigned long duration = stoul(matches[2]);
+						Task tempTask(machineId, duration);
+						tempTasks.push_back(tempTask);
+						machines[machineId] = 0;
+						line = matches.suffix().str();
 					}
-					if (!line.empty()) //non-task data left on line
-					{
-						std::cerr << "FILE ERROR: Format of job " << jobID
-								<< " incorrect" << std::endl;
-					}
-					Job tempJob(jobID,tasks);
+					Job tempJob(i, tempTasks);
 					jobs.push_back(tempJob);
-					++jobID;
 				}
-			}
-			if (nJobs != jobID)
-			{
-				std::cerr << "FILE ERROR: Expected jobs: " << nJobs
-						<< "\t" << "actual Jobs:" << jobID << std::endl;
-			}
-			else if (nMachines != machines.size())
-			{
-				std::cerr << "FILE ERROR: Expected machines: "
-						<< nMachines << "\t" << "actual machines:"
-						<< machines.size() << std::endl;
 			}
 		}
 		else
 		{
-			std::cerr << "FILE ERROR: Format of header incorrect" << std::endl;
+			std::cout << "No Job/Machine amounts found in first line of file: " << filename << std::endl;
 		}
 	}
 	else
 	{
-		std::cerr << "FILE ERROR: Cannot open file \"" << filename << "\""
-				<< std::endl;
+		std::cout << "Cannot open file: " << filename << std::endl;
 	}
 }
 
