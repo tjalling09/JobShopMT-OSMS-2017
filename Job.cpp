@@ -12,13 +12,12 @@
 
 //Constructor
 Job::Job(const unsigned int aId, const std::vector<Task>& aTasks) :
-	done(false),id(aId), tasks(aTasks), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
+	id(aId), tasks(aTasks), currentTaskIndex(0), currentTime(0), startTime(0), endTime(0)
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
 	//printJob();
-
 }
 
 //Destructor
@@ -27,7 +26,6 @@ Job::~Job()
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	// TODO Auto-generated destructor stub
 }
 
 //Operators
@@ -101,13 +99,6 @@ void Job::increaseCurrentTaskIndex()
 	{
 		++currentTaskIndex;
 	}
-}
-
-void Job::addTime(unsigned long time)
-{
-	#ifdef DEV
-		std::cout << __PRETTY_FUNCTION__ << std::endl;
-	#endif
 }
 
 bool Job::checkIfDone() const
@@ -207,11 +198,11 @@ unsigned long Job::getSlackTime() const
 	#endif
 	if (tasks.empty())
 	{
-		return ULONG_MAX;
+		return INT_MAX;
 	}
 	else
 	{
-		return tasks.at(currentTaskIndex).getSlackTime();
+		return tasks[currentTaskIndex].getSlackTime();
 	}
 }
 

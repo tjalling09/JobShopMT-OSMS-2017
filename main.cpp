@@ -7,7 +7,6 @@
 
 #include "Jobshop.h"
 #include <iostream>
-
 //#define DEV
 
 int main(int argc, char **argv)
@@ -27,7 +26,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		std::cout << "Please add an input file!"<< std::endl;
+		throw std::logic_error("Please add an input file!");
 	}
 	return 0;
 }

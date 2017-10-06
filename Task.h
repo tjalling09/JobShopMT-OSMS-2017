@@ -29,6 +29,7 @@ public:
 	unsigned long getSlackTime() const;
 
 private:
+	//Atributes
 	unsigned int machine;
 	unsigned long duration;
 	unsigned long earliestStartTime;

@@ -6,15 +6,11 @@
  */
 
 #include "Jobshop.h"
-#include <fstream>
 #include <iostream>
-#include <utility>
-#include <limits>
-#include <array>
 #include <algorithm>
+#include <fstream>
 #include <iterator>
 #include <regex>
-
 //#define DEV
 
 //Constructor
@@ -41,25 +37,36 @@ void Jobshop::schedule()
 #ifdef DEV
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 #endif
-	unsigned long currentTime = 0;
+	unsigned long globalTickTime = 0;
 	while (!jobs.empty())
 	{
 		for (Job& job : jobs)
 		{
 			job.setEarliestStartTime(
-					std::max(job.getEarliestStartTime(), currentTime));
+					std::max(job.getEarliestStartTime(), globalTickTime));
 		}
 
-		calculateSlack();
+		unsigned long maxFinishTime = 0;
+
+		for (Job& job : jobs)
+		{
+			job.calculateEarliestStartTime();
+			maxFinishTime = std::max(maxFinishTime, job.getEarliestFinishTime());
+		}
+
+		for (Job& job : jobs)
+		{
+			job.calculateLatestStartTime(maxFinishTime);
+		}
 
 		std::sort(jobs.begin(), jobs.end());
 
 		for (auto i = jobs.begin(); i != jobs.end(); ++i)
 		{
-			if ((i->getEarliestStartTime() <= currentTime)
-					&& (getFreeMachineAt(i->getFirstMachine()) <= currentTime))
+			if ((i->getEarliestStartTime() <= globalTickTime)
+					&& (getFreeMachineAt(i->getFirstMachine()) <= globalTickTime))
 			{
-				machines[i->getFirstMachine()] = currentTime
+				machines[i->getFirstMachine()] = globalTickTime
 						+ i->getFirstTaskDuration();
 				i->increaseCurrentTaskIndex();
 			}
@@ -76,16 +83,16 @@ void Jobshop::schedule()
 			}
 		}
 
-		unsigned long nextFreeMachineMoment = ULONG_MAX;
+		unsigned long nextFreeMachineMoment = INT_MAX;
 		for (auto machine : machines)
 		{
-			if (machine.second > currentTime
+			if (machine.second > globalTickTime
 					&& machine.second < nextFreeMachineMoment)
 			{
 				nextFreeMachineMoment = machine.second;
 			}
 		}
-		currentTime = nextFreeMachineMoment;
+		globalTickTime = nextFreeMachineMoment;
 	}
 }
 
@@ -121,25 +128,22 @@ void Jobshop::extractJobs(const std::string& filename)
 	if (inputFile.is_open())
 	{
 		std::string line;
-		std::regex numPairRegex("^\\s*(\\[0-9]+)\\s+(\\[0-9]+)\\s*"); //  to match some number, some white spaces, and some number again
+		std::regex numPairRegex("^\\s*([0-9]+)\\s+([0-9]+)\\s*");
 		std::smatch matches;
 
-		inputFile.open(filename);
 		std::getline(inputFile, line);
-
-		// Search for first pair (job amount and machine amount)
 		if (std::regex_search(line, matches, numPairRegex))
 		{
-			nJobs = std::stoi(matches[1], 0, 10);
-			nMachines = std::stoi(matches[2], 0, 10);
+			nJobs = std::stoi(matches[1]);
+			nMachines = std::stoi(matches[2]);
 
 			for (size_t i = 0; i < nJobs; ++i)
 			{
-				getline(inputFile, line);
-				if (std::regex_search(line, matches, numPairRegex)) //line contains job?
+				std::getline(inputFile, line);
+				if (std::regex_search(line, matches, numPairRegex))
 				{
 					std::vector<Task> tempTasks;
-					while (std::regex_search(line, matches, numPairRegex)) // read tasks
+					while (std::regex_search(line, matches, numPairRegex))
 					{
 						unsigned int machineId = stoi(matches[1]);
 						unsigned long duration = stoul(matches[2]);
@@ -155,44 +159,14 @@ void Jobshop::extractJobs(const std::string& filename)
 		}
 		else
 		{
-			std::cout << "No Job/Machine amounts found in first line of file: " << filename << std::endl;
+			throw std::logic_error(
+					"No jobs/machine specified on the first line!");
 		}
 	}
 	else
 	{
-		std::cout << "Cannot open file: " << filename << std::endl;
+		throw std::logic_error("No input file given!");
 	}
-}
-
-void Jobshop::calculateSlack()
-{
-#ifdef DEV
-	std::cout << __PRETTY_FUNCTION__ << std::endl;
-#endif
-	unsigned long maxFinishTime = 0;
-
-	for (Job& job : jobs)
-	{
-		job.calculateEarliestStartTime();
-		maxFinishTime = std::max(maxFinishTime, job.getEarliestFinishTime()); // get maximum finish time of all jobs
-	}
-
-	for (Job& job : jobs)
-	{
-		job.calculateLatestStartTime(maxFinishTime);
-	}
-}
-
-bool Jobshop::jobsInProces()
-{
-	for (Job& job : jobs)
-	{
-		if (job.checkIfDone() == false)
-		{
-			return true;
-		}
-	}
-	return false;
 }
 
 //Getter

@@ -10,7 +10,6 @@
 
 #include "Task.h"
 #include <vector>
-#include <utility>
 
 class Job
 {
@@ -49,16 +48,12 @@ public:
 
 private:
 	//Atributes
-	bool done;
 	unsigned int id;
 	std::vector<Task> tasks;
 	unsigned int currentTaskIndex;
 	unsigned long currentTime;
 	unsigned long startTime;
 	unsigned long endTime;
-
-	//Private functions
-//	void createTasks(const std::vector<unsigned int>& aTasks);
 };
 
 #endif /* JOB_H_ */

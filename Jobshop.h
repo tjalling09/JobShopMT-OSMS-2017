@@ -11,7 +11,6 @@
 #include "Job.h"
 #include <vector>
 #include <string>
-#include <fstream>
 #include <map>
 
 class Jobshop
@@ -39,8 +38,6 @@ private:
 	void extractFirstLine();
 	void extractJobs(const std::string& filename);
 	void createJobs(const std::vector<std::vector<unsigned int>>& aJobs);
-	void calculateSlack();
-	bool jobsInProces();
 
 	//Getter
 	unsigned long getFreeMachineAt(const unsigned int machineId);
