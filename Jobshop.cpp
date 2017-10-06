@@ -11,6 +11,7 @@
 #include <fstream>
 #include <iterator>
 #include <regex>
+//als de "#define DEV" dan worden in alle functies de "__PRETTY_FUNCTION__" uitgeprint in de comandline in de main.cpp file
 //#define DEV
 
 //Constructor
@@ -37,30 +38,36 @@ void Jobshop::schedule()
 #ifdef DEV
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 #endif
+	//dit houd bij waar we in de tijd lijn zitten
 	unsigned long globalTickTime = 0;
 	while (!jobs.empty())
 	{
+		//hier word voor elke job de earliestStartTime gezet door de huidige te vergelijken met de global ticktime en daar word het hoogste getal van gepakt.
 		for (Job& job : jobs)
 		{
 			job.setEarliestStartTime(
 					std::max(job.getEarliestStartTime(), globalTickTime));
 		}
 
+		
 		unsigned long maxFinishTime = 0;
-
+		//hier wordt de hoogste maxfinishTime gezet 
 		for (Job& job : jobs)
 		{
 			job.calculateEarliestStartTime();
 			maxFinishTime = std::max(maxFinishTime, job.getEarliestFinishTime());
 		}
 
+		//hier word voor elke job de lateststarttime berekent door de maxfinishTime mee tegeven
 		for (Job& job : jobs)
 		{
 			job.calculateLatestStartTime(maxFinishTime);
 		}
 
+		//hier worden alle jobs gesorteerd op basis van hun slacktime van laag naar hoog
 		std::sort(jobs.begin(), jobs.end());
 
+		//hier word er gekeken voor elke job of hij zijn task kan gaan uitvoeren door te kijken of er niet een task bezig is op het moment en als dat niet het geval is word er gekeken of de machine die de job wil gebruiken wel vrij is en niet word gebruikt door een andere job.
 		for (auto i = jobs.begin(); i != jobs.end(); ++i)
 		{
 			if ((i->getEarliestStartTime() <= globalTickTime)
@@ -72,6 +79,9 @@ void Jobshop::schedule()
 			}
 		}
 
+		//hier wordt er gekeken of er nog jobs over zijn
+		//zoja wordt er gekeken of je job al klaar is.
+		//zoja word de job overgeplaatst naar finishedJobs.
 		auto job = jobs.end();
 		while (job > jobs.begin())
 		{
@@ -83,6 +93,7 @@ void Jobshop::schedule()
 			}
 		}
 
+		//hier word de globalticktime gezet naar het eerste moment dat er weer een machine vrij is zodat er dan kan worden gekeken of er een job die ischien wilt gebruiken.
 		unsigned long nextFreeMachineMoment = INT_MAX;
 		for (auto machine : machines)
 		{
@@ -101,6 +112,7 @@ void Jobshop::printJobs()
 #ifdef DEV
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 #endif
+	// hier wordt voor elke job alle tasks uigeprint in de jobshop
 	for (Job& job : finishedJobs)
 	{
 		job.setCurrentTaskIndex(0);
@@ -175,6 +187,7 @@ unsigned long Jobshop::getFreeMachineAt(const unsigned int machineId)
 #ifdef DEV
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 #endif
+	//hier word er de eerste mogelijke tijd terug gegeven dat de opgevraagde machine vrij is
 	auto machine = machines.find(machineId);
 	return machine->second;
 }
