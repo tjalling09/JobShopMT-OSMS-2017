@@ -28,7 +28,6 @@ Jobshop::~Jobshop()
 #ifdef DEV
 	std::cout << __PRETTY_FUNCTION__ << std::endl;
 #endif
-	// TODO Auto-generated destructor stub
 }
 
 //Public functions
