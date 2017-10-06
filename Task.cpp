@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include "Task.h"
-
+//als de "#define DEV" dan worden in alle functies de "__PRETTY_FUNCTION__" uitgeprint in de comandline in de main.cpp file
 //#define DEV
 
 //Constructor
