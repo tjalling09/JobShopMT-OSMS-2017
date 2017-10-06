@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include "Task.h"
-//als de "#define DEV" dan worden in alle functies de "__PRETTY_FUNCTION__" uitgeprint in de comandline in de main.cpp file
+//De "#define DEV" zorgt ervoor dat van alle functies in Task.cpp "__PRETTY_FUNCTION__" wordt uitgeprint in de comandline.
 //#define DEV
 
 //Constructor
@@ -25,7 +25,6 @@ Task::~Task()
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	// TODO Auto-generated destructor stub
 }
 
 //Setters
@@ -80,5 +79,6 @@ unsigned long Task::getMachine() const
 
 unsigned long Task::getSlackTime() const
 {
+	//De slack time is de tijd dat een taak uitgesteld kan worden. Oftewel de laatst mogelijk begintijd - de eerst mogelijk begintijd.
 	return lastStartTime - earliestStartTime;
 }

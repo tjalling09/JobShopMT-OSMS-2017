@@ -8,7 +8,7 @@
 #include <iostream>
 #include "Job.h"
 
-// als "DEV" nit is uit gecomment zal elke functie "__PRETTY_FUNCTION__" printen in Job
+//De "#define DEV" zorgt ervoor dat van alle functies in Job.cpp "__PRETTY_FUNCTION__" wordt uitgeprint in de comandline.
 //#define DEV
 
 //Constructor
@@ -18,7 +18,10 @@ Job::Job(const unsigned int aId, const std::vector<Task>& aTasks) :
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	//als printJob() niet is uitgecomment wordt de job geprint in de command line
+	/*
+	 * printJob() print van elke job alle taken uit.
+	 * wordt gebruikt voor het testen.
+	 */
 	//printJob();
 }
 
@@ -36,7 +39,6 @@ Job& Job::operator=(const Job& aJob)
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	//er word gecontoleerd op id, tasks en currentTaskIndex
 	if (this != &aJob)
 	{
 		id = aJob.id;
@@ -51,7 +53,7 @@ bool Job::operator<(const Job& aJob)
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	// deze functie word gebruikt door de sort in de schedular in jobshop daar sorteren we op de slackTime
+	//Deze operator wordt gebruikt door de sorteren van de jobs vector in de schedular in jobshop om zo te kunnen sorteren op de slacktime.
 	if (getSlackTime() == aJob.getSlackTime())
 	{
 		return getId() < aJob.getId();
@@ -68,15 +70,15 @@ void Job::calculateEarliestStartTime()
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	//hier kijken wat de eers mogelijke tijd is dat de volgende task kan beginnen
+
+	//Hier berekenen we voor elke taak de eerst mogelijke tijd dat hij kan beginnen.
 	if (!tasks.empty())
 	{
 		for (unsigned int i = currentTaskIndex; i < tasks.size() - 1; ++i)
 		{
 			Task& current = tasks[i];
 			Task& next = tasks[i + 1];
-			next.setEarliestStartTime(
-					current.getEarliestStartTime() + current.getDuration());
+			next.setEarliestStartTime(current.getEarliestStartTime() + current.getDuration());
 		}
 	}
 }
@@ -87,6 +89,7 @@ void Job::calculateLatestStartTime(unsigned long maxFinishTime)
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
 	
+	//Hier berekenen we voor elke taak de laatst mogelijke tijd (LS) dat hij kan beginnen.
 	tasks.back().setLastStartTime(maxFinishTime - tasks.back().getDuration());
 	for (unsigned int i = tasks.size() - 1; i > currentTaskIndex; --i)
 	{
@@ -101,7 +104,7 @@ void Job::increaseCurrentTaskIndex()
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	// hier word de taskindex opgehoogt met 1
+	//Hiet wordt de taskindex met 1 opgehoogd.
 	if(currentTaskIndex < tasks.size())
 	{
 		++currentTaskIndex;
@@ -113,7 +116,8 @@ bool Job::checkIfDone() const
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	//return of de job al klaar is
+
+	//Geeft terug of de job al klaar is, oftewel of de huidige taak index gelijk is aan de grootte van de taken vector.
 	return currentTaskIndex == tasks.size();
 }
 
@@ -122,8 +126,9 @@ void Job::printJob()
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
+
+	//Hier wordt elke taak van de job geprint naar de command line.
 	std::cout << "Job " << id << ": ";
-	//hier wordt elke task in de job geprint in de comaand line
 	for(Task task : tasks)
 	{
 		 std::cout << "[" << task.getMachine() << "," << task.getDuration() << "] ";
@@ -137,7 +142,8 @@ void Job::setEarliestStartTime(const unsigned long aEarliestStart)
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	//hier word de de huidige task zijn earlieststarttime aan gepast
+
+	//Hier wordt van de huidige taak zijn earliest start time aangepast
 	tasks[currentTaskIndex].setEarliestStartTime(aEarliestStart);
 }
 
@@ -146,7 +152,8 @@ void Job::setCurrentTaskIndex(const unsigned int index)
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	//hier kan de current task index worden verandert
+
+	//Hier wordt de huidige taak index van een job gezet op de waarde van index.
 	if(currentTaskIndex <= tasks.size())
 	{
 		currentTaskIndex = index;
@@ -186,7 +193,7 @@ unsigned int Job::getCurrentTaskIndex() const
 	return currentTaskIndex;
 }
 
-unsigned int Job::getFirstMachine() const
+unsigned int Job::getCurrentMachine() const
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
@@ -194,7 +201,7 @@ unsigned int Job::getFirstMachine() const
 	return tasks[currentTaskIndex].getMachine();
 }
 
-unsigned long Job::getFirstTaskDuration() const
+unsigned long Job::getCurrentTaskDuration() const
 {
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
@@ -207,14 +214,15 @@ unsigned long Job::getSlackTime() const
 	#ifdef DEV
 		std::cout << __PRETTY_FUNCTION__ << std::endl;
 	#endif
-	//als er geen tasks meer zijn word zo'n groot moglijk getal ge retoneert zodat deze kan worden over schreven door de andere jobs.
-	if (tasks.empty())
+
+	//Geeft de slack time van de huidige taak terug.
+	if(currentTaskIndex < tasks.size())
 	{
-		return INT_MAX;
+		return tasks[currentTaskIndex].getSlackTime();
 	}
 	else
 	{
-		return tasks[currentTaskIndex].getSlackTime();
+		return ULONG_MAX;
 	}
 }
 

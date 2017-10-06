@@ -38,8 +38,6 @@ private:
 	void extractFirstLine();
 	void extractJobs(const std::string& filename);
 	void createJobs(const std::vector<std::vector<unsigned int>>& aJobs);
-
-	//Getter
 	unsigned long getFreeMachineAt(const unsigned int machineId);
 };
 

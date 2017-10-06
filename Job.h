@@ -41,10 +41,9 @@ public:
 	unsigned long getEarliestStartTime() const;
 	unsigned long getEarliestFinishTime() const;
 	unsigned int getCurrentTaskIndex() const;
-	unsigned int getFirstMachine() const;
-	unsigned long getFirstTaskDuration() const;
+	unsigned int getCurrentMachine() const;
+	unsigned long getCurrentTaskDuration() const;
 	unsigned long getSlackTime() const;
-
 
 private:
 	//Atributes

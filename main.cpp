@@ -7,7 +7,8 @@
 
 #include "Jobshop.h"
 #include <iostream>
-//als de "#define DEV" dan worden in alle functies de "__PRETTY_FUNCTION__" uitgeprint in de comandline in de main.cpp file
+#include <chrono>
+//De "#define DEV" zorgt ervoor dat van alle functies in main.cpp "__PRETTY_FUNCTION__" wordt uitgeprint in de comandline.
 //#define DEV
 
 int main(int argc, char **argv)
@@ -17,13 +18,27 @@ int main(int argc, char **argv)
 	#endif
 	if(argc > 1)
 	{
-		std::cout << "Start Scheduling..."<< std::endl;
-		//maakt een jobshop aan met het mee gegeven bestand
+		std::cout << "Start Scheduling...\n"<< std::endl;
+
+		//Maakt een jobshop aan met het mee gegeven bestand.
 		Jobshop jobshop(argv[1]);
+
+		//Start timer.
+		std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+		//Start het schedulen.
 		jobshop.schedule();
+
+		//Stop timer.
+		std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+		//Print de gescheduled jobs.
 		jobshop.printJobs();
 
-		std::cout << "Scheduling finished!"<< std::endl;
+		std::cout << "\nScheduling finished!\n"<< std::endl;
+
+		//Print tijd die het programma erover deed om uit te voeren.
+		std::cout << "Elapsed time: " << (std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) /1000000.0 <<std::endl;
 	}
 	else
 	{
@@ -33,6 +48,6 @@ int main(int argc, char **argv)
 }
 
 /*
-we hebben er voor gekozen voor alle tijd variabelen een unsigned long tegebruiken
-en unsigned int voor de indexen
+ * Tijd variabelen: unsigned long
+ * indexes: 		unsigned int
 */
