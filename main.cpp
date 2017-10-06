@@ -7,6 +7,7 @@
 
 #include "Jobshop.h"
 #include <iostream>
+//als de "#define DEV" dan worden in alle functies de "__PRETTY_FUNCTION__" uitgeprint in de comandline in de main.cpp file
 //#define DEV
 
 int main(int argc, char **argv)
@@ -17,7 +18,7 @@ int main(int argc, char **argv)
 	if(argc > 1)
 	{
 		std::cout << "Start Scheduling..."<< std::endl;
-
+		//maakt een jobshop aan met het mee gegeven bestand
 		Jobshop jobshop(argv[1]);
 		jobshop.schedule();
 		jobshop.printJobs();
@@ -31,3 +32,7 @@ int main(int argc, char **argv)
 	return 0;
 }
 
+/*
+we hebben er voor gekozen voor alle tijd variabelen een unsigned long tegebruiken
+en unsigned int voor de indexen
+*/
